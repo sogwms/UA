@@ -1,0 +1,12 @@
+from util import *
+
+Import('env')
+
+cwd = GetCurrentDir()
+
+path = [cwd]
+env.PrependUnique(CPPPATH=path)
+
+objs = []
+
+Return('objs')

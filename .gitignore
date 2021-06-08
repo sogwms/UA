@@ -1,0 +1,9 @@
+t/
+__pycache__/
+build/
+*.pyc
+*.bin
+*.elf
+*.hex
+*.map
+*.dblite

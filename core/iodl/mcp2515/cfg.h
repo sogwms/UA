@@ -1,0 +1,3 @@
+// #define 
+
+#define CFG_DEFAULT_BITRATE     MCP2515_CAN_BITRATE_500K

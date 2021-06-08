@@ -1,0 +1,13 @@
+import os
+from util import *
+
+Import('env')
+
+cwd = GetCurrentDir()
+
+path = [cwd+'/linux']
+env.PrependUnique(CPPPATH=path)
+
+objs = Glob('linux/*.c')
+
+Return('objs')
