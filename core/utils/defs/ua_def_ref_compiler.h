@@ -97,4 +97,11 @@
     #error not supported tool chain
 #endif
 
+
+
+#define UA_ALIGN(size, align)           (((size) + (align) - 1) & ~((align) - 1))
+
+#define UA_ALIGN_DOWN(size, align)      ((size) & ~((align) - 1))
+
+
 #endif // __UA_DEF_REF_COMPILER_H__

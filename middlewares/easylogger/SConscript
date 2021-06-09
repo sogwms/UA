@@ -5,6 +5,7 @@ Import('env')
 cwd = GetCurrentDir()
 
 path = [cwd+'/easylogger/inc']
+path += [cwd+'/port']
 env.PrependUnique(CPPPATH=path)
 
 objs = Glob('easylogger/src/*.c')

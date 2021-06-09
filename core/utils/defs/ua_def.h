@@ -32,6 +32,7 @@ enum ua_status_code
     UA_ERROR    = 1,
     UA_EEMPTY   = 4,
     UA_EIO      = 8,
+    UA_EINVAL   = 10,
 };
 
 #define UA_ASSERT(exp)
