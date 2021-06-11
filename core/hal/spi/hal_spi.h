@@ -28,14 +28,14 @@ ua_size_t ua_spi_transfer(ua_spi_device_p device,
                           void          *recv_buf,
                           ua_size_t      len);
 
-ua_inline ua_size_t ua_spi_recv(ua_spi_device_p device,
+UA_INLINE ua_size_t ua_spi_recv(ua_spi_device_p device,
                                 void        *recv_buf,
                                 ua_size_t    len)
 {
     return ua_spi_transfer(device, UA_NULL, recv_buf, len);
 }
 
-ua_inline ua_size_t ua_spi_send(ua_spi_device_p device,
+UA_INLINE ua_size_t ua_spi_send(ua_spi_device_p device,
                                 const void  *send_buf,
                                 ua_size_t    len)
 {

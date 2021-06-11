@@ -12,9 +12,14 @@
     #define UA_UNUSED                   __attribute__((unused))
     #define UA_USED                     __attribute__((used))
     #define ALIGN(n)                    __attribute__((aligned(n)))
-
+#ifdef (__CC_ARM)    
+    #define PACKED                      __attribute__((packed))
+#endif
+#ifdef (__CLANG_ARM)
+    #define PACKED                      __attribute__((packed, aligned(1)))
+#endif
     #define UA_WEAK                     __attribute__((weak))
-    #define ua_inline                   static __inline
+    #define UA_INLINE                   static __inline
     /* module compiling */
     #ifdef UA_USING_MODULE
         #define UAT_API                 __declspec(dllimport)
@@ -30,7 +35,7 @@
     #define PRAGMA(x)                   _Pragma(#x)
     #define ALIGN(n)                    PRAGMA(data_alignment=n)
     #define UA_WEAK                     __weak
-    #define ua_inline                   static inline
+    #define UA_INLINE                   static inline
     #define UAT_API
 
 #elif defined (__GNUC__)                /* GNU GCC Compiler */
@@ -49,8 +54,9 @@
     #define UA_UNUSED                   __attribute__((unused))
     #define UA_USED                     __attribute__((used))
     #define ALIGN(n)                    __attribute__((aligned(n)))
+    #define PACKED                      __attribute__((packed, aligned(1)))
     #define UA_WEAK                     __attribute__((weak))
-    #define ua_inline                   static __inline
+    #define UA_INLINE                   static __inline
     #define UAT_API
 #elif defined (__ADSPBLACKFIN__)        /* for VisualDSP++ Compiler */
     #include <stdarg.h>
@@ -59,7 +65,7 @@
     #define UA_USED                     __attribute__((used))
     #define ALIGN(n)                    __attribute__((aligned(n)))
     #define UA_WEAK                     __attribute__((weak))
-    #define ua_inline                   static inline
+    #define UA_INLINE                   static inline
     #define UAT_API
 #elif defined (_MSC_VER)
     #include <stdarg.h>
@@ -67,8 +73,9 @@
     #define UA_UNUSED
     #define UA_USED
     #define ALIGN(n)                    __declspec(align(n))
+    #define PACKED                      
     #define UA_WEAK
-    #define ua_inline                   static __inline
+    #define UA_INLINE                   static __inline
     #define UAT_API
 #elif defined (__TI_COMPILER_VERSION__)
     #include <stdarg.h>
@@ -81,7 +88,7 @@
     #define PRAGMA(x)                   _Pragma(#x)
     #define ALIGN(n)
     #define UA_WEAK
-    #define ua_inline                   static inline
+    #define UA_INLINE                   static inline
     #define UAT_API
 #elif defined (__TASKING__)
     #include <stdarg.h>
@@ -91,12 +98,11 @@
     #define PRAGMA(x)                   _Pragma(#x)
     #define ALIGN(n)                    __attribute__((__align(n)))
     #define UA_WEAK                     __attribute__((weak))
-    #define ua_inline                   static inline
+    #define UA_INLINE                   static inline
     #define UAT_API
 #else
     #error not supported tool chain
 #endif
-
 
 
 #define UA_ALIGN(size, align)           (((size) + (align) - 1) & ~((align) - 1))
