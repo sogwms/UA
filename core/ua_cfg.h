@@ -1,3 +1,5 @@
+#include "../cfg.h"
+
 #define UA_MAX_LENGTH_DEV_NAME  8
 #define UA_MAX_NUMBER_DEVICE    256
 
