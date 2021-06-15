@@ -21,7 +21,3 @@ int main()
 
     test_shell_routine();
 }
-
-
-
-
