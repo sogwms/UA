@@ -1,6 +1,9 @@
 #include <string.h>
 #include "./ioal.h"
 
+#define LOG_TAG "ua ioal"
+#include <elog.h>
+
 struct device_hub_manager
 {
     ua_device_p devs[UA_MAX_NUMBER_DEVICE];
@@ -27,7 +30,7 @@ int ua_device_register(ua_device_p dev, const char *name, uint32_t type, uint16_
 
     dhm.devs[dhm.dev_counter] = dev;
     dhm.dev_counter++;
-    ua_printf("UA: registered dev : %s\n", name);
+    log_d("UA: registered dev : %s", name);
     return UA_EOK;
 }
 
@@ -48,11 +51,12 @@ ua_device_p ua_device_find(const char *name)
     ua_device_p device;
     for (uint32_t i=0; i<dhm.dev_counter; i++) {
         device = dhm.devs[i];
+
         if (device == NULL) {
-            UA_ABORT("Faltal error. which shouldn't happen");
+            log_a("Faltal error. which shouldn't happen");
         }
         if (strcmp(device->name, name) == 0){
-            ua_printf("UA. find device %s\n", name);
+            log_d("UA. find device %s", name);
             return device;
         }
     }
