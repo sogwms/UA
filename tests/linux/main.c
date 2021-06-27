@@ -2,6 +2,15 @@
 #include <ua_def.h>
 #include <elog.h>
 
+
+#include <stdio.h>
+#include <finsh.h>
+
+extern void finsh_thread_entry(void *parameter);
+extern int finsh_system_init(void);
+extern void finsh_system_function_init(const void *begin, const void *end);
+
+
 extern int bsp_spi_init(void);
 
 void board_init(void) 
@@ -29,12 +38,12 @@ static void init_elog(void)
 
 static void test_elog()
 {
-    log_a("hi");
-    log_e("hi");
-    log_d("hi");
-    log_i("hi");
-    log_v("hi");
-    log_w("hi");
+    log_a("Hi");
+    log_e("Hi");
+    log_d("Hi");
+    log_i("Hi");
+    log_v("Hi");
+    log_w("Hi");
 }
 
 int main()
@@ -48,4 +57,27 @@ int main()
     
 
     board_init();
+
+    finsh_system_init();
+    printf("Hi\n");
+    finsh_thread_entry(0);
 }
+
+
+
+char rt_hw_console_getchar(void)
+{
+    char c = getchar();
+    return c;
+}
+
+void rt_show_version(void)
+{
+    printf("Here should print version info\n");
+}
+
+int test(int argc, char **argv)
+{
+    printf("test");
+}
+MSH_CMD_EXPORT(test, list all symbol in system)
