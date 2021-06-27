@@ -51,7 +51,7 @@ struct finsh_sysvar *_sysvar_table_end      = NULL;
 #endif
 
 struct finsh_shell *shell;
-static char *finsh_prompt_custom = RT_NULL;
+static char *finsh_prompt_custom = NULL;
 
 #if defined(_MSC_VER) || (defined(__GNUC__) && defined(__x86_64__))
 struct finsh_syscall* finsh_syscall_next(struct finsh_syscall* call)
@@ -81,7 +81,7 @@ int finsh_set_prompt(const char * prompt)
     if(finsh_prompt_custom)
     {
         rt_free(finsh_prompt_custom);
-        finsh_prompt_custom = RT_NULL;
+        finsh_prompt_custom = NULL;
     }
 
     /* strdup */
@@ -146,7 +146,7 @@ const char *finsh_get_prompt(void)
  */
 uint8_t finsh_get_prompt_mode(void)
 {
-    RT_ASSERT(shell != RT_NULL);
+    RT_ASSERT(shell != NULL);
     return shell->prompt_mode;
 }
 
@@ -161,7 +161,7 @@ uint8_t finsh_get_prompt_mode(void)
  */
 void finsh_set_prompt_mode(uint8_t prompt_mode)
 {
-    RT_ASSERT(shell != RT_NULL);
+    RT_ASSERT(shell != NULL);
     shell->prompt_mode = prompt_mode;
 }
 
@@ -173,7 +173,7 @@ static int finsh_getchar(void)
 #else
     char ch = 0;
 
-    RT_ASSERT(shell != RT_NULL);
+    RT_ASSERT(shell != NULL);
     while (rt_device_read(shell->device, -1, &ch, 1) != 1)
         rt_sem_take(&shell->rx_sem, RT_WAITING_FOREVER);
 
@@ -188,12 +188,12 @@ static int finsh_getchar(void)
 #if !defined(RT_USING_POSIX) && defined(RT_USING_DEVICE)
 static rt_err_t finsh_rx_ind(rt_device_t dev, rt_size_t size)
 {
-    RT_ASSERT(shell != RT_NULL);
+    RT_ASSERT(shell != NULL);
 
     /* release semaphore to let finsh thread rx data */
     rt_sem_release(&shell->rx_sem);
 
-    return RT_EOK;
+    return UA_EOK;
 }
 
 /**
@@ -205,11 +205,11 @@ static rt_err_t finsh_rx_ind(rt_device_t dev, rt_size_t size)
  */
 void finsh_set_device(const char *device_name)
 {
-    rt_device_t dev = RT_NULL;
+    rt_device_t dev = NULL;
 
-    RT_ASSERT(shell != RT_NULL);
+    RT_ASSERT(shell != NULL);
     dev = rt_device_find(device_name);
-    if (dev == RT_NULL)
+    if (dev == NULL)
     {
         printf("finsh: can not find device: %s\n", device_name);
         return;
@@ -219,13 +219,13 @@ void finsh_set_device(const char *device_name)
     if (dev == shell->device) return;
     /* open this device and set the new device in finsh shell */
     if (rt_device_open(dev, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_INT_RX | \
-                       RT_DEVICE_FLAG_STREAM) == RT_EOK)
+                       RT_DEVICE_FLAG_STREAM) == UA_EOK)
     {
-        if (shell->device != RT_NULL)
+        if (shell->device != NULL)
         {
             /* close old finsh device */
             rt_device_close(shell->device);
-            rt_device_set_rx_indicate(shell->device, RT_NULL);
+            rt_device_set_rx_indicate(shell->device, NULL);
         }
 
         /* clear line buffer before switch to new device */
@@ -246,7 +246,7 @@ void finsh_set_device(const char *device_name)
  */
 const char *finsh_get_device()
 {
-    RT_ASSERT(shell != RT_NULL);
+    RT_ASSERT(shell != NULL);
     return shell->device->parent.name;
 }
 #endif
@@ -262,7 +262,7 @@ const char *finsh_get_device()
  */
 void finsh_set_echo(uint8_t echo)
 {
-    RT_ASSERT(shell != RT_NULL);
+    RT_ASSERT(shell != NULL);
     shell->echo_mode = (uint8_t)echo;
 }
 
@@ -275,7 +275,7 @@ void finsh_set_echo(uint8_t echo)
  */
 uint8_t finsh_get_echo()
 {
-    RT_ASSERT(shell != RT_NULL);
+    RT_ASSERT(shell != NULL);
 
     return shell->echo_mode;
 }
@@ -286,7 +286,7 @@ uint8_t finsh_get_echo()
  *
  * @param password new password
  *
- * @return result, RT_EOK on OK, -RT_ERROR on the new password length is less than
+ * @return result, UA_EOK on OK, -RT_ERROR on the new password length is less than
  *  FINSH_PASSWORD_MIN or greater than FINSH_PASSWORD_MAX
  */
 rt_err_t finsh_set_password(const char *password) {
@@ -300,7 +300,7 @@ rt_err_t finsh_set_password(const char *password) {
     rt_strncpy(shell->password, password, FINSH_PASSWORD_MAX);
     rt_hw_interrupt_enable(level);
 
-    return RT_EOK;
+    return UA_EOK;
 }
 
 /**
@@ -352,7 +352,7 @@ static void finsh_wait_auth(void)
                 else if (ch == '\r' || ch == '\n')
                 {
                     printf("\n");
-                    input_finish = RT_TRUE;
+                    input_finish = true;
                     break;
                 }
             }
@@ -376,7 +376,7 @@ static void shell_auto_complete(char *prefix)
 
     printf("\n");
 #ifdef FINSH_USING_MSH
-    if (msh_is_used() == RT_TRUE)
+    if (msh_is_used() == true)
     {
         msh_auto_complete(prefix);
     }
@@ -515,7 +515,7 @@ void finsh_thread_entry(void *parameter)
 
 #if !defined(RT_USING_POSIX) && defined(RT_USING_DEVICE)
     /* set console device as shell device */
-    if (shell->device == RT_NULL)
+    if (shell->device == NULL)
     {
         rt_device_t console = rt_console_get_device();
         if (console)
@@ -529,7 +529,7 @@ void finsh_thread_entry(void *parameter)
     /* set the default password when the password isn't setting */
     if (rt_strlen(finsh_get_password()) == 0)
     {
-        if (finsh_set_password(FINSH_DEFAULT_PASSWORD) != RT_EOK)
+        if (finsh_set_password(FINSH_DEFAULT_PASSWORD) != UA_EOK)
         {
             printf("Finsh password set failed.\n");
         }
@@ -697,7 +697,7 @@ void finsh_thread_entry(void *parameter)
 #endif
 
 #ifdef FINSH_USING_MSH
-            if (msh_is_used() == RT_TRUE)
+            if (msh_is_used() == true)
             {
                 if (shell->echo_mode)
                     printf("\n");
@@ -814,7 +814,7 @@ __declspec(allocate("FSymTab$z")) const struct finsh_syscall __fsym_end =
  */
 int finsh_system_init(void)
 {
-    rt_err_t result = RT_EOK;
+    rt_err_t result = UA_EOK;
     // rt_thread_t tid;
 
 #ifdef FINSH_USING_SYMTAB
@@ -849,7 +849,7 @@ int finsh_system_init(void)
     if(shell)
     {
         printf("finsh shell already init.\n");
-        return RT_EOK;
+        return UA_EOK;
     }
 
     ptr_begin = (unsigned int *)&__fsym_begin;
@@ -867,20 +867,20 @@ int finsh_system_init(void)
 #ifdef RT_USING_HEAP
     /* create or set shell structure */
     shell = (struct finsh_shell *)rt_calloc(1, sizeof(struct finsh_shell));
-    if (shell == RT_NULL)
+    if (shell == NULL)
     {
         printf("no memory for shell\n");
         return -1;
     }
     tid = rt_thread_create(FINSH_THREAD_NAME,
-                           finsh_thread_entry, RT_NULL,
+                           finsh_thread_entry, NULL,
                            FINSH_THREAD_STACK_SIZE, FINSH_THREAD_PRIORITY, 10);
 #else
     shell = &_shell;
     // tid = &finsh_thread;
     // result = rt_thread_init(&finsh_thread,
     //                         FINSH_THREAD_NAME,
-    //                         finsh_thread_entry, RT_NULL,
+    //                         finsh_thread_entry, NULL,
     //                         &finsh_thread_stack[0], sizeof(finsh_thread_stack),
     //                         FINSH_THREAD_PRIORITY, 10);
 #endif /* RT_USING_HEAP */
@@ -888,7 +888,7 @@ int finsh_system_init(void)
     // rt_sem_init(&(shell->rx_sem), "shrx", 0, 0);
     finsh_set_prompt_mode(1);
 
-    // if (tid != NULL && result == RT_EOK)
+    // if (tid != NULL && result == UA_EOK)
     //     rt_thread_startup(tid);
     return 0;
 }

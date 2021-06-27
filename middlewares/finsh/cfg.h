@@ -1,7 +1,7 @@
 #ifndef __CFG_H__
 #define __CFG_H__
 
-#include <rtdef.h>
+#include <ua_def.h>
 #include "port_support.h"
 
 #define RT_USING_FINSH
