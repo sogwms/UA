@@ -10,7 +10,7 @@ LINK_SCRIPT = 'board/linker_scripts/link.lds'
 TARGET_NAME = 'program'
 
 MY_EXEC_PATH = '/home/sogw/Downloads/gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux/gcc-arm-none-eabi-10-2020-q4-major/bin/'
-MY_EXEC_PATH += ':' '/home/vano/Downloads/gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux/gcc-arm-none-eabi-10-2020-q4-major/bin'
+MY_EXEC_PATH += ':' '/mnt/d/ForLinux/gcc-arm-none-eabi-10-2020-q4-major/bin'
 # User space END
 
 #------
@@ -54,12 +54,12 @@ if target_platform == 'cortex-m3':
 
 elif target_platform == 'linux':
     compiler_prefix = ''
-    link_script = '/home/vano/all/Desktop/latest/ua/tests/linux/link.lds'
+    # link_script = '/home/vano/all/Desktop/latest/ua/tests/linux/link.lds'
     #specific
     CCFLAGS = ' -Dgcc' 
     CPPDEFINES = []
     ASFLAGS = ''
-    LINKFLAGS = ' -Wl,-Map=target.map'  +  ' -W %s' % link_script
+    LINKFLAGS = ' -Wl,-Map=target.map'  +  ' -W '
     # LINKFLAGS += ' %s' %link_script
     LIBPATH = ''
     LIBS = []
