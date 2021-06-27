@@ -13,8 +13,6 @@ int ua_device_register(ua_device_p dev, const char *name, uint32_t type, uint16_
 {
     UA_ASSERT(dev != NULL);
 
-    ua_device_p device;
-
     if (ua_device_find(name) != NULL) {
         return UA_ERROR;
     }
@@ -86,19 +84,23 @@ int ua_device_set_tx_complete(ua_device_p dev, int (*tx_complete)(ua_device_p de
 int ua_device_init(ua_device_p dev)
 {
     UA_ASSERT(dev != NULL);
+    return UA_EOK;
 }
 
 int ua_device_read(ua_device_p dev, ua_off_t pos, void *buf, ua_size_t size)
 {
     UA_ASSERT(dev != NULL);
+    return UA_EOK;
 }
 
 int ua_device_write(ua_device_p dev, ua_off_t pos, const void *buf, ua_size_t size)
 {
     UA_ASSERT(dev != NULL);
+    return UA_EOK;
 }
 
 int ua_device_ctrl(ua_device_p dev, int cmd, void *args)
 {
     UA_ASSERT(dev != NULL);
+    return UA_EOK;
 }
