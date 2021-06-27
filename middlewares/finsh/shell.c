@@ -184,7 +184,7 @@ void finsh_set_device(const char *device_name)
     dev = rt_device_find(device_name);
     if (dev == NULL)
     {
-        printf("finsh: can not find device: %s\n", device_name);
+        ua_printf("finsh: can not find device: %s\n", device_name);
         return;
     }
 
@@ -297,7 +297,7 @@ static void finsh_wait_auth(void)
 
     while (1)
     {
-        printf("Password for login: ");
+        ua_printf("Password for login: ");
         while (!input_finish)
         {
             while (1)
@@ -312,7 +312,7 @@ static void finsh_wait_auth(void)
                 if (ch >= ' ' && ch <= '~' && cur_pos < FINSH_PASSWORD_MAX)
                 {
                     /* change the printable characters to '*' */
-                    printf("*");
+                    ua_printf("*");
                     password[cur_pos++] = ch;
                 }
                 else if (ch == '\b' && cur_pos > 0)
@@ -320,11 +320,11 @@ static void finsh_wait_auth(void)
                     /* backspace */
                     cur_pos--;
                     password[cur_pos] = '\0';
-                    printf("\b \b");
+                    ua_printf("\b \b");
                 }
                 else if (ch == '\r' || ch == '\n')
                 {
-                    printf("\n");
+                    ua_printf("\n");
                     input_finish = true;
                     break;
                 }
@@ -335,7 +335,7 @@ static void finsh_wait_auth(void)
         {
             /* authentication failed, delay 2S for retry */
             rt_thread_delay(2 * RT_TICK_PER_SECOND);
-            printf("Sorry, try again.\n");
+            ua_printf("Sorry, try again.\n");
             cur_pos = 0;
             input_finish = RT_FALSE;
             rt_memset(password, '\0', FINSH_PASSWORD_MAX);
@@ -347,7 +347,7 @@ static void finsh_wait_auth(void)
 static void shell_auto_complete(char *prefix)
 {
 
-    printf("\n");
+    ua_printf("\n");
 #ifdef FINSH_USING_MSH
     if (msh_is_used() == true)
     {
@@ -362,7 +362,7 @@ static void shell_auto_complete(char *prefix)
 #endif
     }
 
-    printf("%s%s", FINSH_PROMPT, prefix);
+    ua_printf("%s%s", FINSH_PROMPT, prefix);
 }
 
 #ifndef FINSH_USING_MSH_ONLY
@@ -371,7 +371,7 @@ void finsh_run_line(struct finsh_parser *parser, const char *line)
     const char *err_str;
 
     if(shell->echo_mode)
-        printf("\n");
+        ua_printf("\n");
     finsh_parser_run(parser, (unsigned char *)line);
 
     /* compile node root */
@@ -382,7 +382,7 @@ void finsh_run_line(struct finsh_parser *parser, const char *line)
     else
     {
         err_str = finsh_error_string(finsh_errno());
-        printf("%s\n", err_str);
+        ua_printf("%s\n", err_str);
     }
 
     /* run virtual machine */
@@ -394,14 +394,14 @@ void finsh_run_line(struct finsh_parser *parser, const char *line)
         ch = (unsigned char)finsh_stack_bottom();
         if (ch > 0x20 && ch < 0x7e)
         {
-            printf("\t'%c', %d, 0x%08x\n",
+            ua_printf("\t'%c', %d, 0x%08x\n",
                        (unsigned char)finsh_stack_bottom(),
                        (unsigned int)finsh_stack_bottom(),
                        (unsigned int)finsh_stack_bottom());
         }
         else
         {
-            printf("\t%d, 0x%08x\n",
+            ua_printf("\t%d, 0x%08x\n",
                        (unsigned int)finsh_stack_bottom(),
                        (unsigned int)finsh_stack_bottom());
         }
@@ -416,16 +416,16 @@ static rt_bool_t shell_handle_history(struct finsh_shell *shell)
 {
 #if defined(_WIN32)
     int i;
-    printf("\r");
+    ua_printf("\r");
 
     for (i = 0; i <= 60; i++)
         putchar(' ');
-    printf("\r");
+    ua_printf("\r");
 
 #else
-    printf("\033[2K\r");
+    ua_printf("\033[2K\r");
 #endif
-    printf("%s%s", FINSH_PROMPT, shell->line);
+    ua_printf("%s%s", FINSH_PROMPT, shell->line);
     return RT_FALSE;
 }
 
@@ -504,14 +504,15 @@ void finsh_thread_entry(void *parameter)
     {
         if (finsh_set_password(FINSH_DEFAULT_PASSWORD) != UA_EOK)
         {
-            printf("Finsh password set failed.\n");
+            ua_printf("Finsh password set failed.\n");
         }
     }
     /* waiting authenticate success */
     finsh_wait_auth();
 #endif
 
-    printf(FINSH_PROMPT);
+    // ua_printf(FINSH_PROMPT);
+    ua_printf("%s", FINSH_PROMPT);
 
     while (1)
     {
@@ -593,7 +594,7 @@ void finsh_thread_entry(void *parameter)
             {
                 if (shell->line_curpos)
                 {
-                    printf("\b");
+                    ua_printf("\b");
                     shell->line_curpos --;
                 }
 
@@ -603,7 +604,7 @@ void finsh_thread_entry(void *parameter)
             {
                 if (shell->line_curpos < shell->line_position)
                 {
-                    printf("%c", shell->line[shell->line_curpos]);
+                    ua_printf("%c", shell->line[shell->line_curpos]);
                     shell->line_curpos ++;
                 }
 
@@ -619,7 +620,7 @@ void finsh_thread_entry(void *parameter)
             int i;
             /* move the cursor to the beginning of line */
             for (i = 0; i < shell->line_curpos; i++)
-                printf("\b");
+                ua_printf("\b");
 
             /* auto complete */
             shell_auto_complete(&shell->line[0]);
@@ -647,15 +648,15 @@ void finsh_thread_entry(void *parameter)
                            shell->line_position - shell->line_curpos);
                 shell->line[shell->line_position] = 0;
 
-                printf("\b%s  \b", &shell->line[shell->line_curpos]);
+                ua_printf("\b%s  \b", &shell->line[shell->line_curpos]);
 
                 /* move the cursor to the origin position */
                 for (i = shell->line_curpos; i <= shell->line_position; i++)
-                    printf("\b");
+                    ua_printf("\b");
             }
             else
             {
-                printf("\b \b");
+                ua_printf("\b \b");
                 shell->line[shell->line_position] = 0;
             }
 
@@ -673,7 +674,7 @@ void finsh_thread_entry(void *parameter)
             if (msh_is_used() == true)
             {
                 if (shell->echo_mode)
-                    printf("\n");
+                    ua_printf("\n");
                 msh_exec(shell->line, shell->line_position);
             }
             else
@@ -685,11 +686,12 @@ void finsh_thread_entry(void *parameter)
 
                 if (shell->line_position != 0) finsh_run_line(&shell->parser, shell->line);
                 else
-                    if (shell->echo_mode) printf("\n");
+                    if (shell->echo_mode) ua_printf("\n");
 #endif
             }
 
-            printf(FINSH_PROMPT);
+            // ua_printf(FINSH_PROMPT);
+            ua_printf("%s", FINSH_PROMPT);
             memset(shell->line, 0, sizeof(shell->line));
             shell->line_curpos = shell->line_position = 0;
             continue;
@@ -709,17 +711,17 @@ void finsh_thread_entry(void *parameter)
                        shell->line_position - shell->line_curpos);
             shell->line[shell->line_curpos] = ch;
             if (shell->echo_mode)
-                printf("%s", &shell->line[shell->line_curpos]);
+                ua_printf("%s", &shell->line[shell->line_curpos]);
 
             /* move the cursor to new position */
             for (i = shell->line_curpos; i < shell->line_position; i++)
-                printf("\b");
+                ua_printf("\b");
         }
         else
         {
             shell->line[shell->line_position] = ch;
             if (shell->echo_mode)
-                printf("%c", ch);
+                ua_printf("%c", ch);
         }
 
         ch = 0;
@@ -821,7 +823,7 @@ int finsh_system_init(void)
 
     if(shell)
     {
-        printf("finsh shell already init.\n");
+        ua_printf("finsh shell already init.\n");
         return UA_EOK;
     }
 
@@ -842,7 +844,7 @@ int finsh_system_init(void)
     shell = (struct finsh_shell *)rt_calloc(1, sizeof(struct finsh_shell));
     if (shell == NULL)
     {
-        printf("no memory for shell\n");
+        ua_printf("no memory for shell\n");
         return -1;
     }
     tid = rt_thread_create(FINSH_THREAD_NAME,
@@ -865,7 +867,7 @@ int finsh_system_init(void)
     //     rt_thread_startup(tid);
     return 0;
 }
-INIT_APP_EXPORT(finsh_system_init);
+// INIT_APP_EXPORT(finsh_system_init);
 
 #endif /* RT_USING_FINSH */
 

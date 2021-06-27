@@ -71,7 +71,7 @@ extern int msh_help(int argc, char **argv);
 
 // int msh_help(int argc, char **argv)
 // {
-//     printf("RT-Thread shell commands:\n");
+//     ua_printf("RT-Thread shell commands:\n");
 //     {
 //         struct finsh_syscall *index;
 
@@ -81,13 +81,13 @@ extern int msh_help(int argc, char **argv);
 //         {
 //             if (strncmp(index->name, "__cmd_", 6) != 0) continue;
 // #if defined(FINSH_USING_DESCRIPTION) && defined(FINSH_USING_SYMTAB)
-//             printf("%-16s - %s\n", &index->name[6], index->desc);
+//             ua_printf("%-16s - %s\n", &index->name[6], index->desc);
 // #else
-//             printf("%s ", &index->name[6]);
+//             ua_printf("%s ", &index->name[6]);
 // #endif
 //         }
 //     }
-//     printf("\n");
+//     ua_printf("\n");
 
 //     return 0;
 // }
@@ -129,12 +129,12 @@ static int msh_split(char *cmd, rt_size_t length, char *argv[FINSH_ARG_MAX])
 
         if(argc >= FINSH_ARG_MAX)
         {
-            printf("Too many args ! We only Use:\n");
+            ua_printf("Too many args ! We only Use:\n");
             for(i = 0; i < argc; i++)
             {
-                printf("%s ", argv[i]);
+                ua_printf("%s ", argv[i]);
             }
-            printf("\n");
+            ua_printf("\n");
             break;
         }
 
@@ -187,18 +187,18 @@ static cmd_function_t msh_get_cmd(char *cmd, int size)
             index < _syscall_table_end;
             FINSH_NEXT_SYSCALL(index))
     {
-        // printf("run in\n");
-        // printf("add:%x\n", index);
-        // printf("index->name:%s\n",index->name);
-        // printf("run in2\n");
+        // ua_printf("run in\n");
+        // ua_printf("add:%x\n", index);
+        // ua_printf("index->name:%s\n",index->name);
+        // ua_printf("run in2\n");
 
         if (strncmp(index->name, "__cmd_", 6) != 0) continue;
-        // printf("run in22\n");
+        // ua_printf("run in22\n");
 
         if (strncmp(&index->name[6], cmd, size) == 0 &&
                 index->name[6 + size] == '\0')
         {
-        // printf("run in3\n");
+        // ua_printf("run in3\n");
 
             cmd_func = (cmd_function_t)index->func;
             break;
@@ -294,7 +294,7 @@ int msh_exec(char *cmd, rt_size_t length)
         }
         *tcmd = '\0';
     }
-    printf("%s: command not found.\n", cmd);
+    ua_printf("%s: command not found.\n", cmd);
     return -1;
 }
 
@@ -348,7 +348,7 @@ void msh_auto_complete(char *prefix)
                 if (length < min_length)
                     min_length = length;
 
-                printf("%s\n", cmd_name);
+                ua_printf("%s\n", cmd_name);
             }
         }
     }

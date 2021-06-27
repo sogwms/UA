@@ -45,7 +45,7 @@
 
 long hello(void)
 {
-    printf("Hello RT-Thread!\n");
+    ua_printf("Hello RT-Thread!\n");
 
     return 0;
 }
@@ -54,7 +54,7 @@ MSH_CMD_EXPORT(hello,clear the terminal screen);
 
 static long clear(void)
 {
-    printf("\x1b[2J\x1b[H");
+    ua_printf("\x1b[2J\x1b[H");
 
     return 0;
 }
@@ -73,7 +73,7 @@ MSH_CMD_EXPORT(version, show RT-Thread version information);
 
 // rt_inline void object_split(int len)
 // {
-//     while (len--) printf("-");
+//     while (len--) ua_printf("-");
 // }
 
 // typedef struct
@@ -172,7 +172,7 @@ long list(void)
     struct finsh_sysvar_item *sysvar_item;
 #endif
 
-    printf("--Function List:\n");
+    ua_printf("--Function List:\n");
     {
         struct finsh_syscall *index;
         for (index = _syscall_table_begin;
@@ -183,9 +183,9 @@ long list(void)
             if (strncmp((char *)index->name, "__", 2) == 0) continue;
 
 #if defined(FINSH_USING_DESCRIPTION) && defined(FINSH_USING_SYMTAB)
-            printf("%-16s -- %s\n", index->name, index->desc);
+            ua_printf("%-16s -- %s\n", index->name, index->desc);
 #else
-            printf("%s\n", index->name);
+            ua_printf("%s\n", index->name);
 #endif
         }
     }
@@ -195,11 +195,11 @@ long list(void)
     syscall_item = global_syscall_list;
     while (syscall_item != NULL)
     {
-        printf("[l] %s\n", syscall_item->syscall.name);
+        ua_printf("[l] %s\n", syscall_item->syscall.name);
         syscall_item = syscall_item->next;
     }
 
-    printf("--Variable List:\n");
+    ua_printf("--Variable List:\n");
     {
         struct finsh_sysvar *index;
         for (index = _sysvar_table_begin;
@@ -207,9 +207,9 @@ long list(void)
                 FINSH_NEXT_SYSVAR(index))
         {
 #ifdef FINSH_USING_DESCRIPTION
-            printf("%-16s -- %s\n", index->name, index->desc);
+            ua_printf("%-16s -- %s\n", index->name, index->desc);
 #else
-            printf("%s\n", index->name);
+            ua_printf("%s\n", index->name);
 #endif
         }
     }
@@ -217,7 +217,7 @@ long list(void)
     sysvar_item = global_sysvar_list;
     while (sysvar_item != NULL)
     {
-        printf("[l] %s\n", sysvar_item->sysvar.name);
+        ua_printf("[l] %s\n", sysvar_item->sysvar.name);
         sysvar_item = sysvar_item->next;
     }
 #endif
@@ -229,7 +229,7 @@ MSH_CMD_EXPORT(list, list all symbol in system)
 
 int msh_help(int argc, char **argv)
 {
-    printf("RT-Thread shell commands:\n");
+    ua_printf("RT-Thread shell commands:\n");
     {
         struct finsh_syscall *index;
 
@@ -239,13 +239,13 @@ int msh_help(int argc, char **argv)
         {
             if (strncmp(index->name, "__cmd_", 6) != 0) continue;
 #if defined(FINSH_USING_DESCRIPTION) && defined(FINSH_USING_SYMTAB)
-            printf("%-16s - %s\n", &index->name[6], index->desc);
+            ua_printf("%-16s - %s\n", &index->name[6], index->desc);
 #else
-            printf("%s ", &index->name[6]);
+            ua_printf("%s ", &index->name[6]);
 #endif
         }
     }
-    printf("\n");
+    ua_printf("\n");
 
     return 0;
 }
@@ -306,7 +306,7 @@ void list_prefix(char *prefix)
             {
                 if (func_cnt == 0)
                 {
-                    printf("--function:\n");
+                    ua_printf("--function:\n");
 
                     if (*prefix != 0)
                     {
@@ -328,9 +328,9 @@ void list_prefix(char *prefix)
                 }
 
 #ifdef FINSH_USING_DESCRIPTION
-                printf("%-16s -- %s\n", index->name, index->desc);
+                ua_printf("%-16s -- %s\n", index->name, index->desc);
 #else
-                printf("%s\n", index->name);
+                ua_printf("%s\n", index->name);
 #endif
             }
         }
@@ -344,7 +344,7 @@ void list_prefix(char *prefix)
         {
             if (func_cnt == 0)
             {
-                printf("--function:\n");
+                ua_printf("--function:\n");
                 if (*prefix != 0 && name_ptr == NULL)
                 {
                     /* set name_ptr */
@@ -364,7 +364,7 @@ void list_prefix(char *prefix)
                     min_length = length;
             }
 
-            printf("[l] %s\n", syscall_item->syscall.name);
+            ua_printf("[l] %s\n", syscall_item->syscall.name);
         }
         syscall_item = syscall_item->next;
     }
@@ -380,7 +380,7 @@ void list_prefix(char *prefix)
             {
                 if (var_cnt == 0)
                 {
-                    printf("--variable:\n");
+                    ua_printf("--variable:\n");
 
                     if (*prefix != 0 && name_ptr == NULL)
                     {
@@ -403,9 +403,9 @@ void list_prefix(char *prefix)
                 }
 
 #ifdef FINSH_USING_DESCRIPTION
-                printf("%-16s -- %s\n", index->name, index->desc);
+                ua_printf("%-16s -- %s\n", index->name, index->desc);
 #else
-                printf("%s\n", index->name);
+                ua_printf("%s\n", index->name);
 #endif
             }
         }
@@ -419,7 +419,7 @@ void list_prefix(char *prefix)
         {
             if (var_cnt == 0)
             {
-                printf("--variable:\n");
+                ua_printf("--variable:\n");
                 if (*prefix != 0 && name_ptr == NULL)
                 {
                     /* set name_ptr */
@@ -439,7 +439,7 @@ void list_prefix(char *prefix)
                     min_length = length;
             }
 
-            printf("[v] %s\n", sysvar_item->sysvar.name);
+            ua_printf("[v] %s\n", sysvar_item->sysvar.name);
         }
         sysvar_item = sysvar_item->next;
     }
