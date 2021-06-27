@@ -75,33 +75,6 @@ struct finsh_sysvar* finsh_sysvar_next(struct finsh_sysvar* call)
 }
 #endif /* defined(_MSC_VER) || (defined(__GNUC__) && defined(__x86_64__)) */
 
-#ifdef RT_USING_HEAP
-int finsh_set_prompt(const char * prompt)
-{
-    if(finsh_prompt_custom)
-    {
-        rt_free(finsh_prompt_custom);
-        finsh_prompt_custom = NULL;
-    }
-
-    /* strdup */
-    if(prompt)
-    {
-        finsh_prompt_custom = (char *)rt_malloc(strlen(prompt)+1);
-        if(finsh_prompt_custom)
-        {
-            strcpy(finsh_prompt_custom, prompt);
-        }
-    }
-
-    return 0;
-}
-#endif /* RT_USING_HEAP */
-
-#if defined(RT_USING_DFS)
-#include <dfs_posix.h>
-#endif /* RT_USING_DFS */
-
 const char *finsh_get_prompt(void)
 {
 #define _MSH_PROMPT "msh "

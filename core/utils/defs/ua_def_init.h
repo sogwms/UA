@@ -2,11 +2,19 @@
 #define UA_USING_EXPORT_INIT
 /* initialization export */
 #ifdef UA_USING_EXPORT_INIT
+
 typedef int (*init_fn_t)(void);
+
 #ifdef _MSC_VER 
     #define UA_EXPORT_INIT(fn, level)
 #else
-    #define UA_EXPORT_INIT(fn, level)  UA_USED const init_fn_t __ua__init_##fn  UA_SECTION(".uai_fn." level) = fn
+    struct ua_init_cb
+    {
+        const char* fn_name;
+        const init_fn_t fn;
+    };
+    #define UA_EXPORT_INIT(fn, level)  UA_USED const struct ua_init_cb __ua__init_##fn ALIGN(4) UA_SECTION(".uai_fn." level) =  \
+            { #fn, fn};
 #endif
 #else
     #define UA_EXPORT_INIT(fn, level)
