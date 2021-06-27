@@ -54,12 +54,13 @@ if target_platform == 'cortex-m3':
 
 elif target_platform == 'linux':
     compiler_prefix = ''
-    # link_script = '/home/vano/all/Desktop/latest/ua/tests/linux/link.lds'
+    link_script = 'tests/linux/link.lds'
     #specific
     CCFLAGS = ' -Dgcc' 
     CPPDEFINES = []
     ASFLAGS = ''
-    LINKFLAGS = ' -Wl,-Map=target.map'  +  ' -W '
+    LINKFLAGS = '-Wl,-Map,target.map -Wl,--cref' +\
+                      ' -Wl,' + link_script
     # LINKFLAGS += ' %s' %link_script
     LIBPATH = ''
     LIBS = []
