@@ -11,11 +11,11 @@ static struct device_hub_manager dhm = {0};
 
 int ua_device_register(ua_device_p dev, const char *name, uint32_t type, uint16_t flags)
 {
-    UA_ASSERT(dev != UA_NULL);
+    UA_ASSERT(dev != NULL);
 
     ua_device_p device;
 
-    if (ua_device_find(name) != UA_NULL) {
+    if (ua_device_find(name) != NULL) {
         return UA_ERROR;
     }
 
@@ -50,7 +50,7 @@ ua_device_p ua_device_find(const char *name)
     ua_device_p device;
     for (uint32_t i=0; i<dhm.dev_counter; i++) {
         device = dhm.devs[i];
-        if (device == UA_NULL) {
+        if (device == NULL) {
             UA_ABORT("Faltal error. which shouldn't happen");
         }
         if (strcmp(device->name, name) == 0){
@@ -59,13 +59,13 @@ ua_device_p ua_device_find(const char *name)
         }
     }
 
-    return UA_NULL;
+    return NULL;
 }
 
 int ua_device_set_rx_indicate(ua_device_p dev, int (*rx_indicate)(ua_device_p dev, ua_size_t size))
 {
-    UA_ASSERT(dev != UA_NULL);
-    UA_ASSERT(rx_indicate != UA_NULL);
+    UA_ASSERT(dev != NULL);
+    UA_ASSERT(rx_indicate != NULL);
 
     dev->rx_indicate = rx_indicate;
 
@@ -74,8 +74,8 @@ int ua_device_set_rx_indicate(ua_device_p dev, int (*rx_indicate)(ua_device_p de
 
 int ua_device_set_tx_complete(ua_device_p dev, int (*tx_complete)(ua_device_p dev, void *buf))
 {
-    UA_ASSERT(dev != UA_NULL);
-    UA_ASSERT(tx_complete != UA_NULL);
+    UA_ASSERT(dev != NULL);
+    UA_ASSERT(tx_complete != NULL);
 
     dev->tx_complete = tx_complete;
 
@@ -85,20 +85,20 @@ int ua_device_set_tx_complete(ua_device_p dev, int (*tx_complete)(ua_device_p de
 
 int ua_device_init(ua_device_p dev)
 {
-    UA_ASSERT(dev != UA_NULL);
+    UA_ASSERT(dev != NULL);
 }
 
 int ua_device_read(ua_device_p dev, ua_off_t pos, void *buf, ua_size_t size)
 {
-    UA_ASSERT(dev != UA_NULL);
+    UA_ASSERT(dev != NULL);
 }
 
 int ua_device_write(ua_device_p dev, ua_off_t pos, const void *buf, ua_size_t size)
 {
-    UA_ASSERT(dev != UA_NULL);
+    UA_ASSERT(dev != NULL);
 }
 
 int ua_device_ctrl(ua_device_p dev, int cmd, void *args)
 {
-    UA_ASSERT(dev != UA_NULL);
+    UA_ASSERT(dev != NULL);
 }
