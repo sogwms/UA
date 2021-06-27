@@ -5,19 +5,19 @@ SECTIONS {
         . = ALIGN(4);
         PROVIDE_HIDDEN(__fsymtab_start = .);
         KEEP(*(FSymTab));
-        __fsymtab_end = .;
+        PROVIDE_HIDDEN(__fsymtab_end = .);
         . = ALIGN(4);
-        __vsymtab_start = .;
+        PROVIDE_HIDDEN(__vsymtab_start = .);
         KEEP(*(VSymTab))
-        __vsymtab_end = .;
+        PROVIDE_HIDDEN(__vsymtab_end = .);
         . = ALIGN(4);
         KEEP(*(.rodata.name))
 
         /* section information for initial. */
         . = ALIGN(4);
-        __ua_init_start = .;
+        PROVIDE_HIDDEN(__ua_init_start = .);
         KEEP(*(SORT(.uai_fn*)))
-        __ua_init_end = .;
+        PROVIDE_HIDDEN(__ua_init_end = .);
     }
     
 }
