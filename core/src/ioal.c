@@ -74,6 +74,18 @@ int ua_device_set_callback(ua_device_p dev, ua_dev_callback_t cb)
     return UA_EOK;
 }
 
+int ua_device_event_handler(ua_device_p dev, int event, void *content)
+{
+    UA_ASSERT(dev != NULL);
+
+    ua_dev_callback_t cb = dev->_callback;
+    if (cb != NULL) {
+        cb(dev, event, content);
+    }
+
+    return UA_EOK;
+}
+
 int ua_device_init(ua_device_p dev)
 {
     UA_ASSERT(dev != NULL);
