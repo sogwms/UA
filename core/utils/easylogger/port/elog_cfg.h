@@ -29,7 +29,7 @@
 #ifndef _ELOG_CFG_H_
 #define _ELOG_CFG_H_
 
-#include "../../../cfg.h"
+#include "./../cfg.h"
 
 /*---------------------------------------------------------------------------*/
 /* enable log output. */
