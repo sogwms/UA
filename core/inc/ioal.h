@@ -28,10 +28,11 @@ typedef struct ua_device
     void *user_data;
 }ua_device_t;
 
-int ua_device_register(ua_device_p dev, const char *name, uint32_t type, uint16_t flags);
-
 ua_device_p ua_device_find(const char *name);
-
+#ifdef UA_USING_DEVICE_ID
+int ua_device_find_by_id(uint32_t id, ua_device_p dev);
+#endif
+int ua_device_register(ua_device_p dev, const char *name, uint32_t type, uint16_t flags);
 int ua_device_set_callback(ua_device_p dev, ua_dev_callback_t cb);
 
 int ua_device_init(ua_device_p dev);
@@ -39,8 +40,6 @@ int ua_device_read(ua_device_p dev, ua_off_t pos, void *buf, ua_size_t size);
 int ua_device_write(ua_device_p dev, ua_off_t pos, const void *buf, ua_size_t size);
 int ua_device_ctrl(ua_device_p dev, int cmd, void *args);
 
-#ifdef UA_USING_DEVICE_ID
-int ua_device_find_by_id(uint32_t id, ua_device_p dev);
-#endif
+int ua_device_event_handler(ua_device_p dev, int event, void *content);
 
 #endif //__IOAL_H__
