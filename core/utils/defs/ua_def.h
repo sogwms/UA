@@ -12,6 +12,7 @@ enum ua_device_type
     UA_DEVICE_CLASS_SPI_BUS,
     UA_DEVICE_CLASS_SPI_DEVICE,
     UA_DEVICE_CLASS_CAN_BUS,
+    UA_DEVICE_CLASS_SERIAL,
 
     UA_DEVICE_CLASS2 = 0x00100,
 
@@ -29,9 +30,9 @@ enum ua_device_flag
 
 enum ua_dev_event 
 {
-    UA_DEV_EVENT_RESERVED = 0,
-    UA_DEV_EVENT_RX_COMPLETE,
-    UA_DEV_EVENT_TX_COMPLETE,
+    UA_DEVICE_EVENT_RESERVED = 0,
+    UA_DEVICE_EVENT_RX_COMPLETE,
+    UA_DEVICE_EVENT_TX_COMPLETE,
 };
 
 enum ua_status_code
