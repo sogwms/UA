@@ -38,5 +38,7 @@ static ua_can_bus_t _bus;
 
 int bsp_can_init(void)
 {
-    ua_can_bus_register(&_bus, "can1", &_can_ops);
+    return ua_can_bus_register(&_bus, "can1", &_can_ops);
 }
+
+UA_EXPORT_INIT_BOARD(bsp_can_init);

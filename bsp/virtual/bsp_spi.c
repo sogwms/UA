@@ -24,4 +24,4 @@ int bsp_spi_init(void)
     return ua_spi_bus_register(&bus, "spi01", &ops);
 }
 
-// UA_EXPORT_INIT_BOARD(bsp_spi_init);
+UA_EXPORT_INIT_BOARD(bsp_spi_init);
