@@ -64,26 +64,15 @@ ua_device_p ua_device_find(const char *name)
     return NULL;
 }
 
-int ua_device_set_rx_indicate(ua_device_p dev, int (*rx_indicate)(ua_device_p dev, ua_size_t size))
+int ua_device_set_callback(ua_device_p dev, ua_dev_callback_t cb)
 {
     UA_ASSERT(dev != NULL);
-    UA_ASSERT(rx_indicate != NULL);
+    UA_ASSERT(cb != NULL);
 
-    dev->rx_indicate = rx_indicate;
+    dev->_callback = cb;
 
     return UA_EOK;
 }
-
-int ua_device_set_tx_complete(ua_device_p dev, int (*tx_complete)(ua_device_p dev, void *buf))
-{
-    UA_ASSERT(dev != NULL);
-    UA_ASSERT(tx_complete != NULL);
-
-    dev->tx_complete = tx_complete;
-
-    return UA_EOK;
-}
-
 
 int ua_device_init(ua_device_p dev)
 {

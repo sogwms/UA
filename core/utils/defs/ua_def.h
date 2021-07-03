@@ -27,6 +27,13 @@ enum ua_device_flag
     UA_DEVICE_FLAG_INT_TX   = 0x0020,
 };
 
+enum ua_dev_event 
+{
+    UA_DEV_EVENT_RESERVED = 0,
+    UA_DEV_EVENT_RX_COMPLETE,
+    UA_DEV_EVENT_TX_COMPLETE,
+};
+
 enum ua_status_code
 {
     UA_EOK      = 0,

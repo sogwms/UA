@@ -6,6 +6,8 @@
 
 typedef struct ua_device *ua_device_p;
 
+typedef int (*ua_dev_callback_t)(ua_device_p dev, int event, void *content);
+
 typedef struct ua_device
 {
     char name[UA_MAX_LENGTH_DEV_NAME];
@@ -21,8 +23,7 @@ typedef struct ua_device
     int (*write)(ua_device_p dev, ua_off_t pos, const void *buf, ua_size_t size);
     int (*ctrl)(ua_device_p dev, int cmd, void *args);
 
-    int (*rx_indicate)(ua_device_p dev, ua_size_t size);
-    int (*tx_complete)(ua_device_p dev, void *buf);
+    ua_dev_callback_t _callback;
 
     void *user_data;
 }ua_device_t;
@@ -31,9 +32,7 @@ int ua_device_register(ua_device_p dev, const char *name, uint32_t type, uint16_
 
 ua_device_p ua_device_find(const char *name);
 
-int ua_device_set_rx_indicate(ua_device_p dev, int (*rx_indicate)(ua_device_p dev, ua_size_t size));
-
-int ua_device_set_tx_complete(ua_device_p dev, int (*tx_complete)(ua_device_p dev, void *buf));
+int ua_device_set_callback(ua_device_p dev, ua_dev_callback_t cb);
 
 int ua_device_init(ua_device_p dev);
 int ua_device_read(ua_device_p dev, ua_off_t pos, void *buf, ua_size_t size);
