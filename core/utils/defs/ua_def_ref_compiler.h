@@ -12,10 +12,10 @@
     #define UA_UNUSED                   __attribute__((unused))
     #define UA_USED                     __attribute__((used))
     #define ALIGN(n)                    __attribute__((aligned(n)))
-#ifdef (__CC_ARM)    
+#if defined (__CC_ARM)    
     #define PACKED                      __attribute__((packed))
 #endif
-#ifdef (__CLANG_ARM)
+#if defined (__CLANG_ARM)
     #define PACKED                      __attribute__((packed, aligned(1)))
 #endif
     #define UA_WEAK                     __attribute__((weak))
