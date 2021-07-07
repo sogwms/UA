@@ -1,5 +1,30 @@
 #include "hal_spi.h"
 
+/*** Implementation of general device operations abstraction ***/
+static int init(ua_device_p dev)
+{
+    return UA_EOK;
+}
+static int read(ua_device_p dev, ua_off_t pos, void *buf, ua_size_t size)
+{
+    return UA_EOK;
+}
+static int write(ua_device_p dev, ua_off_t pos, const void *buf, ua_size_t size)
+{
+    return UA_EOK;
+}
+static int ctrl(ua_device_p dev, int cmd, void *args)
+{
+    return UA_EOK;
+}
+
+static ua_device_ops_t _ops = {
+    .init = init,
+    .read = read,
+    .write = write,
+    .ctrl = ctrl,
+};
+
 /*** Implementation of spi specific operations ***/
 /* send data then receive data from SPI device */
 UA_WEAK int ua_spi_send_then_recv(ua_spi_device_p device,
@@ -107,21 +132,6 @@ UA_WEAK int ua_spi_configure(ua_spi_device_p device, ua_spi_configuration_p cfg)
     return device->bus->ops->configure(device, &device->config);
 }
 
-/*** Implementation of general device operations abstraction ***/
-static int __device_spi_device_read(ua_device_p dev, ua_off_t pos, void *buf, ua_size_t size)
-{
-    return ua_spi_transfer((ua_spi_device_p)dev, NULL, buf, size);
-}
-static int __device_spi_device_write(ua_device_p dev, ua_off_t pos, const void *buf, ua_size_t size)
-{
-    return ua_spi_transfer((ua_spi_device_p)dev, buf, NULL, size);
-}
-static int __device_spi_device_ctrl(ua_device_p dev, int cmd, void *args)
-{
-    // TODO
-    return UA_EOK;
-}
-
 int ua_spi_bus_register(ua_spi_bus_p bus, const char *name, ua_spi_ops_p ops)
 {
     UA_ASSERT(bus != NULL);
@@ -129,14 +139,7 @@ int ua_spi_bus_register(ua_spi_bus_p bus, const char *name, ua_spi_ops_p ops)
 
     bus->ops = ops;
 
-    ua_device_p device = (ua_device_p)bus;
-
-    device->init = NULL;
-    device->write = __device_spi_device_write;
-    device->read = __device_spi_device_read;
-    device->ctrl = __device_spi_device_ctrl;
-
-    return ua_device_register(device, name, UA_DEVICE_CLASS_SPI_BUS, UA_DEVICE_FLAG_RW);
+    return ua_device_register(&bus->parent, name, &_ops, UA_DEVICE_CLASS_SPI_BUS, UA_DEVICE_FLAG_RW);
 }
 
 int ua_spi_bus_attach_device(ua_spi_device_p device, 
@@ -154,16 +157,11 @@ int ua_spi_bus_attach_device(ua_spi_device_p device,
         device->bus = (ua_spi_bus_p)bus;
         device->parent.user_data = user_data;
 
-        device->parent.init = NULL;
-        device->parent.write = __device_spi_device_write;
-        device->parent.read = __device_spi_device_read;
-        device->parent.ctrl = __device_spi_device_ctrl;
-
         device->send_then_send = ua_spi_send_then_send;
         device->send_then_recv = ua_spi_send_then_recv;
         device->transfer = ua_spi_transfer;
 
-        return ua_device_register((ua_device_p)device, name, UA_DEVICE_CLASS_SPI_DEVICE, UA_DEVICE_FLAG_RW);
+        return ua_device_register(&device->parent, name, &_ops, UA_DEVICE_CLASS_SPI_DEVICE, UA_DEVICE_FLAG_RW);
     }
 
     return UA_ERROR;

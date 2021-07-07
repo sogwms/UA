@@ -1,5 +1,5 @@
 #include <string.h>
-#include "./ioal.h"
+#include <ioal.h>
 
 #define LOG_TAG "ua ioal"
 #include <elog.h>
@@ -12,9 +12,10 @@ struct device_hub_manager
 
 static struct device_hub_manager dhm = {0};
 
-int ua_device_register(ua_device_p dev, const char *name, uint32_t type, uint16_t flags)
+int ua_device_register(ua_device_p dev, const char *name, ua_device_ops_p ops, uint32_t type, uint16_t flags)
 {
     UA_ASSERT(dev != NULL);
+    // UA_ASSERT(ops != NULL);
 
     if (ua_device_find(name) != NULL) {
         return UA_ERROR;
@@ -27,6 +28,8 @@ int ua_device_register(ua_device_p dev, const char *name, uint32_t type, uint16_
 #ifdef UA_USING_DEVICE_ID
     dev->id = dhm.dev_counter;
 #endif
+
+    dev->_ops = ops;
 
     dhm.devs[dhm.dev_counter] = dev;
     dhm.dev_counter++;

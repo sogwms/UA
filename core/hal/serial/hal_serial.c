@@ -19,6 +19,13 @@ static int ctrl(ua_device_p dev, int cmd, void *args)
     return UA_EOK;
 }
 
+static ua_device_ops_t _ops = {
+    .init = init,
+    .read = read,
+    .write = write,
+    .ctrl = ctrl,
+};
+
 // called by low-level driver after data is received
 int ua_serial_rx_complete(ua_serial_p dev, uint32_t length)
 {
@@ -52,12 +59,6 @@ int ua_serial_register(ua_serial_p dev, const char *name, ua_serial_ops_p ops)
     dev->send = ua_serial_send;
     dev->recv = ua_serial_recv;
 
-    ua_device_p device = (ua_device_p)dev;
-    device->init = init;
-    device->write = write;
-    device->read = read;
-    device->ctrl = ctrl;
-
-    return ua_device_register(device, name, UA_DEVICE_CLASS_SERIAL, UA_DEVICE_FLAG_RW);
+    return ua_device_register(&dev->parent, name, &_ops, UA_DEVICE_CLASS_SERIAL, UA_DEVICE_FLAG_RW);
 }
 
