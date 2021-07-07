@@ -3,20 +3,14 @@
 
 #include <ioal.h>
 
-#define CAN_FRAMETYPE_STD           0
-#define CAN_FRAMETYPE_EXT           1
-
-#define CAN_WORKMODE_NORMAL         0
-#define CAN_WORKMODE_LOOPBACK       1
-
-#define CAN_BAUDRATE_5KB       (    5 * 1000 )
-#define CAN_BAUDRATE_10KB      (   10 * 1000 )
-#define CAN_BAUDRATE_20KB      (   20 * 1000 )
-#define CAN_BAUDRATE_100KB     (  100 * 1000 )
-#define CAN_BAUDRATE_125KB     (  125 * 1000 )
-#define CAN_BAUDRATE_250KB     (  250 * 1000 )   
-#define CAN_BAUDRATE_500KB     (  500 * 1000 )
-#define CAN_BAUDRATE_1000KB    ( 1000 * 1000 )  
+// #define UA_CAN_BAUDRATE_5KB       (    5 * 1000 )
+// #define UA_CAN_BAUDRATE_10KB      (   10 * 1000 )
+// #define UA_CAN_BAUDRATE_20KB      (   20 * 1000 )
+// #define UA_CAN_BAUDRATE_100KB     (  100 * 1000 )
+// #define UA_CAN_BAUDRATE_125KB     (  125 * 1000 )
+// #define UA_CAN_BAUDRATE_250KB     (  250 * 1000 )   
+// #define UA_CAN_BAUDRATE_500KB     (  500 * 1000 )
+// #define UA_CAN_BAUDRATE_1000KB    ( 1000 * 1000 )  
 
 #define UA_CAN_ID_TYPE_STD          (0)
 #define UA_CAN_ID_TYPE_EXT          (1)
@@ -43,28 +37,29 @@ typedef struct ua_can_bus
 
     /** API */
     int (*send)(struct ua_can_bus *bus, ua_can_msg_p msg);
-
+    int (*recv)(struct ua_can_bus *bus, ua_can_msg_p msg);
 }ua_can_bus_t;
 typedef ua_can_bus_t *ua_can_bus_p;
 
-struct can_configure
-{
-    uint32_t baud_rate;
-    uint8_t work_mode : 2;
-    uint8_t frame_type : 1;
-    uint8_t :5;
-};
+// struct can_configure
+// {
+//     uint32_t baud_rate;
+//     uint8_t work_mode : 2;
+//     uint8_t frame_type : 1;
+//     uint8_t :5;
+// };
 
 typedef struct ua_can_ops
 {
-    int (*configure)(ua_can_bus_p bus, struct can_configure *cfg);
-    int (*ctrl)(ua_can_bus_p bus, int cmd, void *arg);          // reserved
-    int (*send)(ua_can_bus_p bus, const void *buf, int len);
-    int (*recv)(ua_can_bus_p bus, void *buf, int len);
+    // int (*configure)(ua_can_bus_p bus, struct can_configure *cfg);
+    // int (*ctrl)(ua_can_bus_p bus, int cmd, void *arg);          // reserved
+    int (*send)(ua_can_bus_p bus, ua_can_msg_p msg);
+    int (*recv)(ua_can_bus_p bus, ua_can_msg_p msg);
 }ua_can_ops_t;
 typedef ua_can_ops_t *ua_can_ops_p;
 
 int ua_can_bus_register(ua_can_bus_p bus, const char *name, ua_can_ops_p ops);
-void ua_can_isr(ua_can_bus_p bus, int event);
+
+int ua_can_rx_complete(ua_can_bus_p bus, uint32_t length);
 
 #endif

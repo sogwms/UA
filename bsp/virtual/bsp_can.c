@@ -1,35 +1,45 @@
+#include <string.h>
 #include <hal_can.h>
 
 #define LOG_TAG "bsp-can"
 #include <elog.h>
 
-static int configure(ua_can_bus_p bus, struct can_configure *cfg) 
+#define BUFFER_SIZE 16
+
+static ua_can_msg_t g_data_buffer[BUFFER_SIZE];
+static uint32_t g_data_length = 0;
+
+static int send(ua_can_bus_p bus, ua_can_msg_p msg)
 {
-    log_v("configure");
+    log_d("Received send request: frameType: %s, idType: %s, id: 0x%x, dataLen: %d", 
+        msg->frame_type == UA_CAN_FRAME_TYPE_DATA ? "DATA" : "REMOTE",
+        msg->id_type == UA_CAN_ID_TYPE_STD ? "STD" : "EXT",
+        msg->id, msg->data_length);
+
+    memcpy(&g_data_buffer[g_data_length], msg, sizeof(ua_can_msg_t));
+    g_data_length++;
+
+    log_d("Internal loopback. emit rx-complete event");
+    ua_can_rx_complete(bus, 1);
+
     return UA_EOK;
 }
 
-static int ctrl(ua_can_bus_p bus, int cmd, void *arg) 
+static int recv(ua_can_bus_p bus, ua_can_msg_p msg) 
 {
-    log_v("ctrl: (%d", cmd);
-    return UA_EOK;
-}
+    log_d("Received recv request");
 
-static int send(ua_can_bus_p bus, const void *buf, int len) 
-{
-    log_v("send: (%d", len);
-    return UA_EOK;
-}
+    if (g_data_length == 0) return UA_EEMPTY;
 
-static int recv(ua_can_bus_p bus, void *buf, int len) 
-{
-    log_v("recv: (%d", len);
+    g_data_length--;
+    memcpy(msg, &g_data_buffer[g_data_length], sizeof(ua_can_msg_t));
+
     return UA_EOK;
 }
 
 static ua_can_ops_t _can_ops = {
-    .configure = configure,
-    .ctrl = ctrl,
+    // .configure = configure,
+    // .ctrl = ctrl,
     .send = send,
     .recv = recv,
 };
