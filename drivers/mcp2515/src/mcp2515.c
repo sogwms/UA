@@ -4,8 +4,8 @@
  * @details NULL
  * 
  * @author  GYC
- * @date    2021.5.24
- * @version 0.1
+ * @date    2021.07.08
+ * @version 0.2
  * 
  * @todo    add support for all operations. add rx buffer
  * 
@@ -19,7 +19,7 @@
  *  Date       |  Version   |  Author         |  Description                     
  *-------------|------------|-----------------|---------------------------------
  *  2021.05.24 |  0.1       |  GYC            |  Create file                     
- * 
+ *  2021.07.08 |  0.2       |  GYC            |  Add 8MHz frequency configuration
 *******************************************************************************/
 #include <stdint.h>
 #include <string.h>
@@ -189,6 +189,9 @@ static void _config_bitrate(mcp2515_hal_t hal, int bitrate, uint8_t freq_unit_m)
     struct reg_CNF2 *cnf2 = (struct reg_CNF2 *)&buffer[1];
     struct reg_CNF3 *cnf3 = (struct reg_CNF3 *)&buffer[0];
 
+
+    if (freq_unit_m == 16) {
+
     switch (bitrate)
     {
     case MCP2515_CAN_BITRATE_500K:
@@ -219,6 +222,31 @@ static void _config_bitrate(mcp2515_hal_t hal, int bitrate, uint8_t freq_unit_m)
         // rt_kprintf("Error. unsupported bitrate config\n");
         return;
         break;
+    }
+    }
+    else if (freq_unit_m == 8) {
+        switch (bitrate)
+        {
+        case MCP2515_CAN_BITRATE_500K:
+            // 8M / 8(1+2+2+3) / 2 = 500K
+            cnf1->SJW = 0;    // 1TQ
+            cnf1->BRP = 0;
+            cnf2->BTLMODE = 1;
+            cnf2->SAM = 0;
+            cnf2->PHSEG1 = 1;
+            cnf2->PRSEG = 1;
+            cnf3->WAKFIL = 0;    //?
+            cnf3->PHSEG2 = 2;
+            break;
+        
+        default:
+            // rt_kprintf("Error. unsupported bitrate config\n");
+            return;
+            break;
+        }
+    }
+    else {
+        // Error Unsupported freq
     }
 
     _cmd_write(hal, REG_ADDR_CNF3, buffer, 3);
