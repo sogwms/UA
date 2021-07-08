@@ -4,8 +4,8 @@
  * @details NULL
  * 
  * @author  GYC
- * @date    2021.5.24
- * @version 0.1
+ * @date    2021.07.08
+ * @version 0.2
  * 
  * @todo    NULL
  * 
@@ -19,13 +19,14 @@
  *  Date       |  Version   |  Author         |  Description                     
  *-------------|------------|-----------------|---------------------------------
  *  2021.05.24 |  0.1       |  GYC            |  Create file                     
- * 
+ *  2021.07.08 |  0.2       |  GYC            |  Optimize portability
 *******************************************************************************/
-#include <spi.h>
-#include <gpio.h>
 #include "mcp2515_hal.h"
 #include <hal_spi.h>
-#include <bsp_spi.h>
+#include <string.h>
+
+#define LOG_TAG "mcp2515-hal"
+#include <elog.h>
 
 static int send_then_recv(mcp2515_hal_t hal, void *send_buf, int send_len, void *recv_buf, int recv_len)
 {
@@ -42,21 +43,25 @@ static int send_then_send(mcp2515_hal_t hal, void *send_buf1, int len1, void *se
 
 int mcp2515_hal_init(struct mcp2515_hal *hal, void *param)
 {
-    // char *dev_name = (char *)param;
+    char *dev_name = (char *)param;
+
+    memset(hal, 0, sizeof(struct mcp2515_hal));
+
+    ua_device_p device = ua_device_find(dev_name);
+    if (device == NULL) {
+        log_a("Failed to find device on %s", dev_name);
+        return UA_ERROR;
+    }
+
+    if (!ua_device_check_class(device, UA_DEVICE_CLASS_SPI_DEVICE)) {
+        log_a("Wrong device class!");
+        return UA_ERROR;
+    }
+
+    hal->dev = device;
     hal->send = send;
     hal->send_then_recv = send_then_recv;
     hal->send_then_send = send_then_send;
-
-    static struct bsp_spi_cs cs;
-    ua_spi_device_p spi_dev;
-
-    cs.GPIO_Pin = GPIO_PIN_6;
-    cs.GPIOx = GPIOE;
-    bsp_hw_spi_attach_device("spi20", "spi2", &cs);
-
-    spi_dev = (ua_spi_device_p)ua_device_find("spi20");
-
-    hal->dev = spi_dev;
 
     return UA_EOK;
 }
