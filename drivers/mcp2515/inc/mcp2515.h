@@ -28,8 +28,8 @@
 #include "mcp2515_hal.h"
 
 enum {
-    MCP2515_CAN_BITRATE_500K,
-    MCP2515_CAN_BITRATE_1000K,
+    MCP2515_CAN_BITRATE_500K = 500*1000,
+    MCP2515_CAN_BITRATE_1000K = 1000*1000,
 };
 
 typedef struct mcp2515 *mcp2515_t;
@@ -41,7 +41,7 @@ struct mcp2515 {
     // void (*rx_ind)(struct mcp2515 *hal);
 };
 
-int mcp2515_init(mcp2515_t ins, mcp2515_rxcb_t rx_cb, void *param);
+int mcp2515_init(mcp2515_t ins, mcp2515_rxcb_t rx_cb, uint8_t freq, uint32_t bitrate, void *paramToHal);
 int mcp2515_can_send(mcp2515_t ins, uint32_t id, uint8_t *buf, uint8_t len);
 int mcp2515_can_polling_read(mcp2515_t ins);
 

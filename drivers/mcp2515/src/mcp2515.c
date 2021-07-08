@@ -192,37 +192,37 @@ static void _config_bitrate(mcp2515_hal_t hal, int bitrate, uint8_t freq_unit_m)
 
     if (freq_unit_m == 16) {
 
-    switch (bitrate)
-    {
-    case MCP2515_CAN_BITRATE_500K:
-        // 16M / 8(1+2+2+3) / 4 = 500K
-        cnf1->SJW = 0;    // 1TQ
-        cnf1->BRP = 1;
-        cnf2->BTLMODE = 1;
-        cnf2->SAM = 0;
-        cnf2->PHSEG1 = 1;
-        cnf2->PRSEG = 1;
-        cnf3->WAKFIL = 0;    //?
-        cnf3->PHSEG2 = 2;
-        break;
+        switch (bitrate)
+        {
+        case MCP2515_CAN_BITRATE_500K:
+            // 16M / 8(1+2+2+3) / 4 = 500K
+            cnf1->SJW = 0;    // 1TQ
+            cnf1->BRP = 1;
+            cnf2->BTLMODE = 1;
+            cnf2->SAM = 0;
+            cnf2->PHSEG1 = 1;
+            cnf2->PRSEG = 1;
+            cnf3->WAKFIL = 0;    //?
+            cnf3->PHSEG2 = 2;
+            break;
 
-    case MCP2515_CAN_BITRATE_1000K:
-        // 16M / 8(1+2+2+3) / 2 = 1M
-        cnf1->SJW = 0;       // 1TQ
-        cnf1->BRP = 0;
-        cnf2->BTLMODE = 1;
-        cnf2->SAM = 0;
-        cnf2->PHSEG1 = 1;
-        cnf2->PRSEG = 1;
-        cnf3->WAKFIL = 0;    //?
-        cnf3->PHSEG2 = 2;
-        break;
-    
-    default:
-        // rt_kprintf("Error. unsupported bitrate config\n");
-        return;
-        break;
-    }
+        case MCP2515_CAN_BITRATE_1000K:
+            // 16M / 8(1+2+2+3) / 2 = 1M
+            cnf1->SJW = 0;       // 1TQ
+            cnf1->BRP = 0;
+            cnf2->BTLMODE = 1;
+            cnf2->SAM = 0;
+            cnf2->PHSEG1 = 1;
+            cnf2->PRSEG = 1;
+            cnf3->WAKFIL = 0;    //?
+            cnf3->PHSEG2 = 2;
+            break;
+        
+        default:
+            // rt_kprintf("Error. unsupported bitrate config\n");
+            return;
+            break;
+        }
     }
     else if (freq_unit_m == 8) {
         switch (bitrate)
@@ -358,11 +358,11 @@ void mcp2515_irq_callback(mcp2515_t ins)
 }
 #endif
 
-int mcp2515_init(mcp2515_t ins, mcp2515_rxcb_t rx_cb, void *param)
+int mcp2515_init(mcp2515_t ins, mcp2515_rxcb_t rx_cb, uint8_t freq, uint32_t bitrate, void *paramToHal)
 {
     //TODO
     int sta;
-    sta = mcp2515_hal_init(&ins->hal, param);
+    sta = mcp2515_hal_init(&ins->hal, paramToHal);
     if (sta != UA_EOK) {
         return UA_ERROR;
     }
@@ -372,7 +372,7 @@ int mcp2515_init(mcp2515_t ins, mcp2515_rxcb_t rx_cb, void *param)
     _cmd_reset(&ins->hal);
 
     _default_cofig_canctrl(&ins->hal);
-    _config_bitrate(&ins->hal, CFG_DEFAULT_BITRATE, 16);
+    _config_bitrate(&ins->hal, bitrate, freq);
 
     // _default_config_rx(&ins->hal);
     _config_irq(&ins->hal);
