@@ -112,3 +112,13 @@ int ua_device_ctrl(ua_device_p dev, int cmd, void *args)
     UA_ASSERT(dev != NULL);
     return UA_EOK;
 }
+
+int ua_device_check_class(ua_device_p dev, uint32_t class)
+{
+    UA_ASSERT(dev != NULL);
+    if ((dev->type&class) == class) {
+        return true;
+    }
+
+    return false;
+}

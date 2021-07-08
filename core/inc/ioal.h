@@ -53,4 +53,6 @@ int ua_device_ctrl(ua_device_p dev, int cmd, void *args);
 
 int ua_device_event_handler(ua_device_p dev, int event, void *content);
 
+int ua_device_check_class(ua_device_p dev, uint32_t class);
+
 #endif //__IOAL_H__
