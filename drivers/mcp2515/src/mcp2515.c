@@ -358,7 +358,7 @@ void mcp2515_irq_callback(mcp2515_t ins)
 }
 #endif
 
-int mcp2515_init(mcp2515_t ins, mcp2515_rxcb_t rx_cb, uint8_t freq, uint32_t bitrate, void *paramToHal)
+int mcp2515_init(mcp2515_t ins, mcp2515_rxcb_t rx_cb, uint8_t freq_unit_m, uint32_t bitrate, void *paramToHal)
 {
     //TODO
     int sta;
@@ -372,7 +372,7 @@ int mcp2515_init(mcp2515_t ins, mcp2515_rxcb_t rx_cb, uint8_t freq, uint32_t bit
     _cmd_reset(&ins->hal);
 
     _default_cofig_canctrl(&ins->hal);
-    _config_bitrate(&ins->hal, bitrate, freq);
+    _config_bitrate(&ins->hal, bitrate, freq_unit_m);
 
     // _default_config_rx(&ins->hal);
     _config_irq(&ins->hal);

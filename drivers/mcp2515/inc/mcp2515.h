@@ -41,7 +41,7 @@ struct mcp2515 {
     // void (*rx_ind)(struct mcp2515 *hal);
 };
 
-int mcp2515_init(mcp2515_t ins, mcp2515_rxcb_t rx_cb, uint8_t freq, uint32_t bitrate, void *paramToHal);
+int mcp2515_init(mcp2515_t ins, mcp2515_rxcb_t rx_cb, uint8_t freq_unit_m, uint32_t bitrate, void *paramToHal);
 int mcp2515_can_send(mcp2515_t ins, uint32_t id, uint8_t *buf, uint8_t len);
 int mcp2515_can_polling_read(mcp2515_t ins);
 
