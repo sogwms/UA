@@ -60,6 +60,6 @@ typedef ua_can_ops_t *ua_can_ops_p;
 
 int ua_can_bus_register(ua_can_bus_p bus, const char *name, ua_can_ops_p ops);
 
-int ua_can_rx_complete(ua_can_bus_p bus, uint32_t length);
+int ua_can_emit_rx_complete_event(ua_can_bus_p bus, uint32_t length);
 
 #endif

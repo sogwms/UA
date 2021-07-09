@@ -26,6 +26,6 @@ typedef ua_serial_ops_t *ua_serial_ops_p;
 
 int ua_serial_register(ua_serial_p dev, const char *name, ua_serial_ops_p ops);
 
-int ua_serial_rx_complete(ua_serial_p dev, uint32_t length);
+int ua_serial_emit_rx_complete_event(ua_serial_p dev, uint32_t length);
 
 #endif // !__HAL_SERIAL_IMPL_H__

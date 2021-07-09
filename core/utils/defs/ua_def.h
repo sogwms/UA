@@ -14,9 +14,9 @@ enum ua_device_type
     UA_DEVICE_CLASS_CAN_BUS,
     UA_DEVICE_CLASS_SERIAL,
 
-    UA_DEVICE_CLASS2 = 0x00100,
+    UA_DEVICE_CLASS2 = (uint32_t)(0x00100),
 
-    UA_DEVICE_CLASS3 = 0x10000,
+    UA_DEVICE_CLASS3 = (uint32_t)(0x10000),
 };
 
 enum ua_device_flag 

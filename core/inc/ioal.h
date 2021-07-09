@@ -51,7 +51,7 @@ int ua_device_read(ua_device_p dev, ua_off_t pos, void *buf, ua_size_t size);
 int ua_device_write(ua_device_p dev, ua_off_t pos, const void *buf, ua_size_t size);
 int ua_device_ctrl(ua_device_p dev, int cmd, void *args);
 
-int ua_device_event_handler(ua_device_p dev, int event, void *content);
+int ua_device_emit_event(ua_device_p dev, int event, void *content);
 
 int ua_device_check_class(ua_device_p dev, uint32_t class);
 

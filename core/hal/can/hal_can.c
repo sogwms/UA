@@ -26,9 +26,9 @@ static ua_device_ops_t _ops = {
     .ctrl = ctrl,
 };
 
-int ua_can_rx_complete(ua_can_bus_p bus, uint32_t length)
+int ua_can_emit_rx_complete_event(ua_can_bus_p bus, uint32_t length)
 {
-    return ua_device_event_handler(&bus->parent, UA_DEVICE_EVENT_RX_COMPLETE, &length);
+    return ua_device_emit_event(&bus->parent, UA_DEVICE_EVENT_RX_COMPLETE, &length);
 }
 
 int ua_can_send(ua_can_bus_p bus, ua_can_msg_p msg)

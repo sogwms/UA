@@ -27,9 +27,9 @@ static ua_device_ops_t _ops = {
 };
 
 // called by low-level driver after data is received
-int ua_serial_rx_complete(ua_serial_p dev, uint32_t length)
+int ua_serial_emit_rx_complete_event(ua_serial_p dev, uint32_t length)
 {
-    return ua_device_event_handler(&dev->parent, UA_DEVICE_EVENT_RX_COMPLETE, &length);
+    return ua_device_emit_event(&dev->parent, UA_DEVICE_EVENT_RX_COMPLETE, &length);
 }
 
 int ua_serial_send(ua_serial_p dev, const void *data, uint32_t len)

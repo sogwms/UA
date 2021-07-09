@@ -25,7 +25,7 @@ static int send(ua_serial_p dev, const void *data, uint32_t len)
 
     // loopback
     log_d("loopback emit rx-complete event");
-    ua_serial_rx_complete(dev, len);
+    ua_serial_emit_rx_complete_event(dev, len);
 
     return len;
 }

@@ -20,7 +20,7 @@ static int send(ua_can_bus_p bus, ua_can_msg_p msg)
     g_data_length++;
 
     log_d("Internal loopback. emit rx-complete event");
-    ua_can_rx_complete(bus, 1);
+    ua_can_emit_rx_complete_event(bus, 1);
 
     return UA_EOK;
 }
