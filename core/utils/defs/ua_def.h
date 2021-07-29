@@ -4,7 +4,7 @@
 #include "./ua_def_ref_compiler.h"
 #include "./ua_def_type.h"
 #include "./ua_def_init.h"
-
+#include "./ua_def_list.h"
 
 enum ua_device_type 
 {
@@ -48,9 +48,7 @@ enum ua_status_code
 
 #define UA_ABORT(msg)
 
-#define ua_container_of(ptr, type, member) \
-    ((type *)((char *)(ptr) - (unsigned long)(&((type *)0)->member)))
-
+#define UA_GET_ADDR_OFFSET(member, type)      ((&(((type *)0)->member)))
 
 #if 1
 #include <stdio.h>
