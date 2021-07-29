@@ -1,0 +1,2 @@
+#define MAX_NUMBER_OF_SUBSCRIPTIONS     128  
+#define MAX_NUMBER_OF_TOPICS            32
